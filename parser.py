@@ -1,33 +1,11 @@
 import numpy as np
 
-
-
+# TODO: Change label types to int?
 def load_dataset(file):
     data = np.loadtxt(file, delimiter=',')
     x = np.delete(data, np.s_[0], axis=1)
     y = np.delete(data, np.s_[1:], axis=1)
 
-    # print data
-    # print data.shape
-
-    # dict = {}
-    # for i in range(90000):
-    #     if y[i, 0] not in dict.keys():
-    #         dict[y[i][0]] = 1
-    #     else:
-    #         dict[y[i][0]] += 1
-    # print dict
-    #
-    # dictTest = {}
-    # for i in range(90000, 100000):
-    #     if y[i, 0] not in dictTest.keys():
-    #         dictTest[y[i][0]] = 1
-    #     else:
-    #         dictTest[y[i][0]] += 1
-    #
-    # print dictTest
-
-    print y
     """"
     Total number of samples in dataset.txt: 515,345
 
@@ -38,19 +16,69 @@ def load_dataset(file):
     It avoids the 'producer effect' by making sure no song from a given artist ends up in both the train and test set.
     """
     training_data = x[0:463715]
-    training_labels = y[0:463715]
     test_data = x[463715:515344]
+
+    training_labels = y[0:463715]
     test_labels = y[463715:515344]
 
     return training_data, training_labels, test_data, test_labels
 
-def load_dataset_decade_mode(file):
+"""Labels ranged from 0-89 corresponding to 1922-2011, endpoints inclusive"""
+def load_dataset_zero_index(file):
+    data = np.loadtxt(file, delimiter=',')
+    x = np.delete(data, np.s_[0], axis=1)
+    y = np.delete(data, np.s_[1:], axis=1)
+    y = y.astype(int)
+
+    start_year = 1922
+
+    y_mod = []
+    for l in y:
+        y_mod.append([l[0] - start_year])
+
+    y_mod = np.asarray(y_mod)
+    print y_mod
+
+    training_data = x[0:463715]
+    test_data = x[463715:515344]
+
+    training_labels = y_mod[0:463715]
+    test_labels = y_mod[463715:515344]
+
+    return training_data, training_labels, test_data, test_labels
+
+"""Labels ranged from 0-9 corresponding to 1920s - 2010s"""
+def load_dataset_decades_zero_index(file):
+    training_data, training_labels_init, test_data, test_labels_init = load_dataset_zero_index(file)
+
+    training_labels = reshape_to_decades(training_labels_init)
+    test_labels = reshape_to_decades(test_labels_init)
+
+    return training_data, training_labels, test_data, test_labels
+
+def reshape_to_decades(y):
+    result = []
+
+    # 192 is 1922 stripped of last digit. Used for classification value
+    for l in y:
+        temp_string = str(l[0])
+        temp_string = temp_string[:3]
+        value = int(temp_string)
+        result.append([value-192])
+
+    result = np.asarray(result)
+    return result
+
+def simple_load(file):
     data = np.loadtxt(file, delimiter=',')
     x = np.delete(data, np.s_[0], axis=1)
     y = np.delete(data, np.s_[1:], axis=1)
 
-    decade_y = []
-    pass
+    return x, y
 
-load_dataset('testset.txt')
 # load_dataset('dataset.txt')
+# load_dataset_zero_index('testset.txt')
+
+
+xt, yt = simple_load('testset.txt')
+print reshape_to_decades(yt)
