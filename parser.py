@@ -81,6 +81,6 @@ def simple_load(file):
 # load_dataset_zero_index('testset.txt')
 
 
-xt, yt = simple_load('testset.txt')
-print reshape_to_decades(yt)
+#xt, yt = simple_load('testset.txt')
+#print reshape_to_decades(yt)
 
