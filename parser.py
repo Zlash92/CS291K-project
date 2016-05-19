@@ -34,7 +34,7 @@ def load_dataset_zero_index(file):
 
     y_mod = []
     for l in y:
-        y_mod.append([l[0] - start_year])
+        y_mod.append(l[0] - start_year)
 
     y_mod = np.asarray(y_mod)
     print y_mod
@@ -80,6 +80,6 @@ def simple_load(file):
 # load_dataset_zero_index('testset.txt')
 
 
-xt, yt = simple_load('testset.txt')
-print reshape_to_decades(yt)
+#xt, yt = simple_load('testset.txt')
+#print reshape_to_decades(yt)
 
