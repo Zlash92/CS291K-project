@@ -82,3 +82,4 @@ def simple_load(file):
 
 xt, yt = simple_load('testset.txt')
 print reshape_to_decades(yt)
+
