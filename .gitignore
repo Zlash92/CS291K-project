@@ -6,3 +6,5 @@
 dataset/
 dataset/
 dataset/*
+
+.DS_Store
