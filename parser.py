@@ -1,56 +1,27 @@
 import numpy as np
-
+import net
 
 
 def load_dataset(file):
-    data = np.loadtxt(file, delimiter=',')
-    x = np.delete(data, np.s_[0], axis=1)
-    y = np.delete(data, np.s_[1:], axis=1)
-
+    # f = open(file)
+    # data = f.readlines()
     # print data
-    # print data.shape
-
-    # dict = {}
-    # for i in range(90000):
-    #     if y[i, 0] not in dict.keys():
-    #         dict[y[i][0]] = 1
-    #     else:
-    #         dict[y[i][0]] += 1
-    # print dict
+    # print "Start"
+    # data = np.loadtxt(file, delimiter=',')
+    # x = np.delete(data, np.s_[0], axis=1)
+    # y = np.delete(data, np.s_[1:], axis=1)
+    # "reshape y"
+    # new_y = np.zeros((y.shape[0],), dtype=np.int)
+    # for i in range(len(y)):
+    #     new_y[i] = int(y[i, 0]-1922)
     #
-    # dictTest = {}
-    # for i in range(90000, 100000):
-    #     if y[i, 0] not in dictTest.keys():
-    #         dictTest[y[i][0]] = 1
-    #     else:
-    #         dictTest[y[i][0]] += 1
-    #
-    # print dictTest
+    # print "GO"
+    x = np.load("X_train.npy")
+    y = np.load("Y_train.npy")
 
-    print y
-    """"
-    Total number of samples in dataset.txt: 515,345
+    np.save("X_train", x)
+    np.save("Y_train", y)
 
-    Info from dataset source:
-    You should respect the following train / test split:
-    train: first 463,715 examples
-    test: last 51,630 examples
-    It avoids the 'producer effect' by making sure no song from a given artist ends up in both the train and test set.
-    """
-    training_data = x[0:463715]
-    training_labels = y[0:463715]
-    test_data = x[463715:515344]
-    test_labels = y[463715:515344]
+    net.run_training(x, y)
 
-    return training_data, training_labels, test_data, test_labels
-
-def load_dataset_decade_mode(file):
-    data = np.loadtxt(file, delimiter=',')
-    x = np.delete(data, np.s_[0], axis=1)
-    y = np.delete(data, np.s_[1:], axis=1)
-
-    decade_y = []
-    pass
-
-load_dataset('testset.txt')
-# load_dataset('dataset.txt')
+load_dataset('YearPredictionMSD.txt')

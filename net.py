@@ -5,10 +5,10 @@ import numpy as np
 def run_training(x_images, y_labels):
 
     x = tf.placeholder(tf.float32, shape=[None, 90])
-    y = tf.placeholder(tf.float32, shape=[None, ])  # TODO: ??
+    y = tf.placeholder(tf.int32, shape=[None, ])  # TODO: ??
     keep_hidden = tf.placeholder("float")
     neurons = 1024
-    lr = 1e-3
+    lr = 1e-4
 
     logits = inference(x, keep_hidden, neurons)
     loss_ = loss(logits, y)
@@ -20,17 +20,18 @@ def run_training(x_images, y_labels):
     sess.run(init)
     batch_size = 100
 
-    for steps in range(1000):
+    for steps in range(100000):
         rand = np.random.randint(0, x_images.shape[0], batch_size)
         x_batch = x_images[rand]
         y_batch = y_labels[rand]
 
         feed_dict = {x: x_batch, y: y_batch, keep_hidden: 0.5}
 
-        loss_val, _ = sess.run([loss_, train], feed_dict=feed_dict)
+        _, loss_val = sess.run([train, loss_], feed_dict=feed_dict)
 
-        if (steps+1) % 100:
-            acc = accuracy.eval(feed_dict=feed_dict)
+        if (steps+1) % 200 == 0:
+            corr = sess.run(accuracy, feed_dict=feed_dict)
+            acc = float(corr)/batch_size * 100.0
             print "Step ", steps, "  - Accuracy: ", acc
             print "Loss: ", loss_val
 
@@ -60,8 +61,8 @@ def inference(x, keep_hidden, neurons):
 
     # # #Output layer
     with tf.name_scope('softmax_layer'):
-        W2 = weight_variable([neurons, 20])
-        b2 = bias_variable([20])
+        W2 = weight_variable([neurons, 90])
+        b2 = bias_variable([90])
         # softmax = tf.nn.softmax(tf.matmul(activation2, weights) + bias)
         logits = tf.matmul(activation1, W2) + b2
 
@@ -83,5 +84,5 @@ def training(loss_value, learning_rate):
 
 def evaluation(logits, labels):
     correct = tf.nn.in_top_k(logits, labels, 1)
-    accuracy = tf.reduce_sum(tf.cast(correct, tf.int32))
+    accuracy = tf.reduce_sum(tf.cast(correct, tf.int32)) # reduce_sum instead?
     return accuracy
