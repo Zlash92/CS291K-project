@@ -5,12 +5,13 @@ import parser
 
 path = "/Users/mortenflood/Documents/Advanced_Data_Mining/Project/YearPredictionMSD.txt"
 path2 = "testset.txt"
+path3 = "dataset/dataset.txt"
 
 
 def launch(file):
     print "Start"
-    # training_data, training_labels, test_data, test_labels = parser.load_dataset_decades_zero_index(file)
-    training_data, training_labels, test_data, test_labels = parser.load_dataset_zero_index(file)
+    training_data, training_labels, test_data, test_labels = parser.load_dataset_decades_zero_index(file)
+    # training_data, training_labels, test_data, test_labels = parser.load_dataset_zero_index(file)
 
     print "Dataset loaded"
 
@@ -25,4 +26,4 @@ def launch(file):
     net.run_training(x, y, x_val, y_val, test_data, test_labels)
 
 
-launch(path)
+launch(path3)

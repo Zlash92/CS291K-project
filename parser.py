@@ -15,6 +15,7 @@ def load_dataset(file):
     data = np.loadtxt(file, delimiter=',')
     x = np.delete(data, np.s_[0], axis=1)
     y = np.delete(data, np.s_[1:], axis=1)
+    y = y.flatten()
 
     training_data = x[0:463715]
     test_data = x[463715:515344]
@@ -35,10 +36,10 @@ def load_dataset_zero_index(file):
 
     y_mod = []
     for l in y:
-        y_mod.append(l[0] - start_year)
+        y_mod.append(l - start_year)
 
     y_mod = np.asarray(y_mod)
-    print y_mod
+    # print y_mod
 
     training_data = x[0:463715]
     test_data = x[463715:515344]
@@ -50,7 +51,7 @@ def load_dataset_zero_index(file):
 
 """Labels ranged from 0-9 corresponding to 1920s - 2010s"""
 def load_dataset_decades_zero_index(file):
-    training_data, training_labels_init, test_data, test_labels_init = load_dataset_zero_index(file)
+    training_data, training_labels_init, test_data, test_labels_init = load_dataset(file)
 
     training_labels = reshape_to_decades(training_labels_init)
     test_labels = reshape_to_decades(test_labels_init)
@@ -62,10 +63,13 @@ def reshape_to_decades(y):
 
     # 192 is 1922 stripped of last digit. Used for classification value
     for l in y:
-        temp_string = str(l[0])
-        temp_string = temp_string[:3]
-        value = int(temp_string)
-        result.append(value-192)
+        if l > 2009:
+            result.append(8)
+        else:
+            temp_string = str(l)
+            temp_string = temp_string[:3]
+            value = int(temp_string)
+            result.append(value-192)
 
     result = np.asarray(result)
     return result
@@ -81,6 +85,8 @@ def simple_load(file):
 # load_dataset_zero_index('testset.txt')
 
 
-#xt, yt = simple_load('testset.txt')
-#print reshape_to_decades(yt)
+# xt, yt = simple_load('testset.txt')
+# yt = yt.flatten()
+# print yt
+# print reshape_to_decades(yt)
 

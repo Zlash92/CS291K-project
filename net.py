@@ -7,7 +7,7 @@ def run_training(x_images, y_labels, x_val, y_val, x_test, y_test):
     x = tf.placeholder(tf.float32, shape=[None, 90])
     y = tf.placeholder(tf.int32, shape=[None, ])  # TODO: ??
     keep_hidden = tf.placeholder("float")
-    neurons = 4096
+    neurons = 1024
     lr = 1e-3
 
     logits = inference(x, keep_hidden, neurons)
@@ -55,7 +55,7 @@ def bias_variable(shape):
 
 
 def inference(x, keep_hidden, neurons):
-
+    output_nerons = 9
     # Fully connected layer 1
     with tf.name_scope('hidden1'):
         W1 = weight_variable([90, neurons])
@@ -63,10 +63,11 @@ def inference(x, keep_hidden, neurons):
         activation1 = tf.nn.relu(tf.matmul(x, W1) + b1)
         activation1 = tf.nn.dropout(activation1, keep_hidden)
 
+
     # # #Output layer
     with tf.name_scope('softmax_layer'):
-        W2 = weight_variable([neurons, 90])
-        b2 = bias_variable([90])
+        W2 = weight_variable([neurons, output_nerons])
+        b2 = bias_variable([output_nerons])
         #softmax = tf.nn.softmax(tf.matmul(activation2, weights) + bias)
         logits = tf.matmul(activation1, W2) + b2
 
