@@ -49,6 +49,7 @@ def load_dataset_zero_index(file):
 
     return training_data, training_labels, test_data, test_labels
 
+
 """Labels ranged from 0-9 corresponding to 1920s - 2010s"""
 def load_dataset_decades_zero_index(file):
     training_data, training_labels_init, test_data, test_labels_init = load_dataset(file)
@@ -57,6 +58,7 @@ def load_dataset_decades_zero_index(file):
     test_labels = reshape_to_decades(test_labels_init)
 
     return training_data, training_labels, test_data, test_labels
+
 
 def reshape_to_decades(y):
     result = []
@@ -74,6 +76,7 @@ def reshape_to_decades(y):
     result = np.asarray(result)
     return result
 
+
 def simple_load(file):
     data = np.loadtxt(file, delimiter=',')
     x = np.delete(data, np.s_[0], axis=1)
@@ -81,12 +84,20 @@ def simple_load(file):
 
     return x, y
 
-# load_dataset('dataset.txt')
-# load_dataset_zero_index('testset.txt')
+
+def mean_subtraction(x, xtr):
+    x -= np.mean(xtr, axis=0)
+    return x
+
+
+def normalize(x, xtr):
+    x /= np.std(xtr, axis=0)
+    return x
 
 
 # xt, yt = simple_load('testset.txt')
 # yt = yt.flatten()
 # print yt
 # print reshape_to_decades(yt)
+
 
