@@ -5,6 +5,7 @@ def load_dataset(file):
     data = np.loadtxt(file, delimiter=',')
     x = np.delete(data, np.s_[0], axis=1)
     y = np.delete(data, np.s_[1:], axis=1)
+    y = y.flatten()
 
     """"
     Total number of samples in dataset.txt: 515,345
@@ -34,7 +35,7 @@ def load_dataset_zero_index(file):
 
     y_mod = []
     for l in y:
-        y_mod.append(l[0] - start_year)
+        y_mod.append(l - start_year)
 
     y_mod = np.asarray(y_mod)
     print y_mod
@@ -47,27 +48,30 @@ def load_dataset_zero_index(file):
 
     return training_data, training_labels, test_data, test_labels
 
+
 """Labels ranged from 0-9 corresponding to 1920s - 2010s"""
 def load_dataset_decades_zero_index(file):
-    training_data, training_labels_init, test_data, test_labels_init = load_dataset_zero_index(file)
+    training_data, training_labels_init, test_data, test_labels_init = load_dataset(file)
 
     training_labels = reshape_to_decades(training_labels_init)
     test_labels = reshape_to_decades(test_labels_init)
 
     return training_data, training_labels, test_data, test_labels
 
+
 def reshape_to_decades(y):
     result = []
 
     # 192 is 1922 stripped of last digit. Used for classification value
     for l in y:
-        temp_string = str(l[0])
+        temp_string = str(l)
         temp_string = temp_string[:3]
         value = int(temp_string)
-        result.append([value-192])
+        result.append(value-192)
 
     result = np.asarray(result)
     return result
+
 
 def simple_load(file):
     data = np.loadtxt(file, delimiter=',')
@@ -76,10 +80,14 @@ def simple_load(file):
 
     return x, y
 
-# load_dataset('dataset.txt')
-# load_dataset_zero_index('testset.txt')
+
+def mean_subtraction(x, xtr):
+    x -= np.mean(xtr, axis=0)
+    return x
 
 
-#xt, yt = simple_load('testset.txt')
-#print reshape_to_decades(yt)
+def normalize(x, xtr):
+    x /= np.std(xtr, axis=0)
+    return x
+
 
