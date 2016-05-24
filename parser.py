@@ -18,10 +18,10 @@ def load_dataset(file):
     y = y.flatten()
 
     training_data = x[0:463715]
-    test_data = x[463715:515344]
+    test_data = x[463715:x.shape[0]]
 
     training_labels = y[0:463715]
-    test_labels = y[463715:515344]
+    test_labels = y[463715:x.shape[0]]
 
     return training_data, training_labels, test_data, test_labels
 

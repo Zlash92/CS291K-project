@@ -7,7 +7,7 @@ def run_training(x_images, y_labels, x_val, y_val, x_test, y_test):
     x = tf.placeholder(tf.float32, shape=[None, 90])
     y = tf.placeholder(tf.int32, shape=[None, ])  # TODO: ??
     keep_hidden = tf.placeholder("float")
-    neurons = 1024
+    neurons = 512
     lr = 1e-3
 
     logits = inference(x, keep_hidden, neurons)
@@ -57,19 +57,42 @@ def bias_variable(shape):
 def inference(x, keep_hidden, neurons):
     output_nerons = 9
     # Fully connected layer 1
+    epsilon = 1e-3
     with tf.name_scope('hidden1'):
         W1 = weight_variable([90, neurons])
         b1 = bias_variable([])
-        activation1 = tf.nn.relu(tf.matmul(x, W1) + b1)
+        z1 = tf.matmul(x, W1) + b1
+
+        mean1, var1 = tf.nn.moments(z1, [0])
+        scale1 = tf.Variable(tf.ones([neurons]))
+        beta1 = tf.Variable(tf.zeros([neurons]))
+        z1_bn = tf.nn.batch_normalization(z1, mean1, var1, beta1, scale1, epsilon)
+
+        activation1 = tf.nn.relu(z1_bn)
         activation1 = tf.nn.dropout(activation1, keep_hidden)
+
+        # activation1_l2_norm = tf.nn.l2_normalize(activation1, dim=0)
+
+    # with tf.name_scope('hidden2'):
+    #     W2 = weight_variable([neurons, neurons])
+    #     b2 = bias_variable([])
+    #     z2 = tf.matmul(activation1, W2) + b2
+    #
+    #     mean2, var2 = tf.nn.moments(z2, [0])
+    #     scale2 = tf.Variable(tf.ones([neurons]))
+    #     beta2 = tf.Variable(tf.zeros([neurons]))
+    #     z2_bn = tf.nn.batch_normalization(z2, mean2, var2, beta2, scale2, epsilon)
+    #
+    #     activation2 = tf.nn.relu(z2_bn)
+    #     activation2 = tf.nn.dropout(activation2, keep_hidden)
 
 
     # # #Output layer
     with tf.name_scope('softmax_layer'):
-        W2 = weight_variable([neurons, output_nerons])
-        b2 = bias_variable([output_nerons])
+        W_out = weight_variable([neurons, output_nerons])
+        b_out = bias_variable([output_nerons])
         #softmax = tf.nn.softmax(tf.matmul(activation2, weights) + bias)
-        logits = tf.matmul(activation1, W2) + b2
+        logits = tf.matmul(activation1, W_out) + b_out
 
     return logits
 
