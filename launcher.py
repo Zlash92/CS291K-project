@@ -5,6 +5,7 @@ import parser
 
 path = "/Users/mortenflood/Documents/Advanced_Data_Mining/Project/YearPredictionMSD.txt"
 path2 = "testset.txt"
+path3 = "dataset/dataset.txt"
 
 
 def launch(file):
@@ -34,4 +35,4 @@ def launch(file):
     net.run_training(x, y, x_val, y_val, test_data, test_labels)
 
 
-launch(path)
+launch(path3)

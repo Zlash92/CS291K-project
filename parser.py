@@ -1,5 +1,15 @@
 import numpy as np
 
+""""
+Total number of samples in dataset.txt: 515,345
+
+Info from dataset source:
+You should respect the following train / test split:
+train: first 463,715 examples
+test: last 51,630 examples
+It avoids the 'producer effect' by making sure no song from a given artist ends up in both the train and test set.
+"""
+
 # TODO: Change label types to int?
 def load_dataset(file):
     data = np.loadtxt(file, delimiter=',')
@@ -7,20 +17,11 @@ def load_dataset(file):
     y = np.delete(data, np.s_[1:], axis=1)
     y = y.flatten()
 
-    """"
-    Total number of samples in dataset.txt: 515,345
-
-    Info from dataset source:
-    You should respect the following train / test split:
-    train: first 463,715 examples
-    test: last 51,630 examples
-    It avoids the 'producer effect' by making sure no song from a given artist ends up in both the train and test set.
-    """
     training_data = x[0:463715]
-    test_data = x[463715:515344]
+    test_data = x[463715:x.shape[0]]
 
     training_labels = y[0:463715]
-    test_labels = y[463715:515344]
+    test_labels = y[463715:x.shape[0]]
 
     return training_data, training_labels, test_data, test_labels
 
@@ -38,7 +39,7 @@ def load_dataset_zero_index(file):
         y_mod.append(l - start_year)
 
     y_mod = np.asarray(y_mod)
-    print y_mod
+    # print y_mod
 
     training_data = x[0:463715]
     test_data = x[463715:515344]
@@ -64,10 +65,13 @@ def reshape_to_decades(y):
 
     # 192 is 1922 stripped of last digit. Used for classification value
     for l in y:
-        temp_string = str(l)
-        temp_string = temp_string[:3]
-        value = int(temp_string)
-        result.append(value-192)
+        if l > 2009:
+            result.append(8)
+        else:
+            temp_string = str(l)
+            temp_string = temp_string[:3]
+            value = int(temp_string)
+            result.append(value-192)
 
     result = np.asarray(result)
     return result
@@ -89,5 +93,11 @@ def mean_subtraction(x, xtr):
 def normalize(x, xtr):
     x /= np.std(xtr, axis=0)
     return x
+
+
+# xt, yt = simple_load('testset.txt')
+# yt = yt.flatten()
+# print yt
+# print reshape_to_decades(yt)
 
 
